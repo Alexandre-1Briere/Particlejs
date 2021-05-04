@@ -30,21 +30,38 @@ class CanvasHelper{
         }
     }
 
-    click(xpos, ypos) {
-        const t0 = performance.now()
-        const RADIUS_SQUARED = RADIUS * RADIUS
-        for(let x = xpos-RADIUS; x <= xpos+RADIUS; x++) {     
-            for(let y = ypos-RADIUS; y <= ypos+RADIUS; y++){
-                if(Math.random() < FREQUENCY && (x - xpos)*(x - xpos) + (y - ypos)*(y - ypos) <= RADIUS_SQUARED){
-                    if(!(x < 0 || x > this.width/PARTICLE_SIZE)){
-                        if(!(y < 0 || y > this.width/PARTICLE_SIZE)){
-                            this.grid[x][y].changeType(PARTICLE_ID.SAND);
-                        }
-                    }    
+    update() {
+        for(let x = this.grid.length - 2; x > 0; x--) {
+            for(let y = this.grid[x].length - 2; y > 0; y--) {
+                if (this.grid[x][y].id === PARTICLE_ID.VOID) continue;
+                if (this.grid[x][y + 1].id === PARTICLE_ID.VOID){
+                    this.grid[x][y+1].changeType(PARTICLE_ID.SAND);
+                    this.grid[x][y].changeType(PARTICLE_ID.VOID);
+                } else if (this.grid[x + 1][y + 1].id === PARTICLE_ID.VOID){
+                    this.grid[x + 1][y+1].changeType(PARTICLE_ID.SAND);
+                    this.grid[x][y].changeType(PARTICLE_ID.VOID);
+                } else if (this.grid[x - 1][y + 1].id === PARTICLE_ID.VOID){
+                    this.grid[x - 1][y+1].changeType(PARTICLE_ID.SAND);
+                    this.grid[x][y].changeType(PARTICLE_ID.VOID);
                 }
             }
         }
-        const t1 = performance.now()
-        this.perf.push(t1-t0);
+    }
+
+    click(xpos, ypos) {
+        const RADIUS_SQUARED = RADIUS * RADIUS
+        for(let x = xpos-RADIUS; x <= xpos+RADIUS; x++) {     
+            for(let y = ypos-RADIUS; y <= ypos+RADIUS; y++){
+                if(Math.random() < FREQUENCY ){
+                    if((x - xpos)*(x - xpos) + (y - ypos)*(y - ypos) <= RADIUS_SQUARED){
+                        if(!(x < 0 || x > this.width/PARTICLE_SIZE)){
+                            if(!(y < 0 || y > this.width/PARTICLE_SIZE)){
+                                this.grid[x][y].changeType(PARTICLE_ID.SAND);
+                            }
+                        }    
+                    }
+                }
+            }
+        } 
     }
 }

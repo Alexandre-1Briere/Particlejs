@@ -9,6 +9,7 @@ function setup() {
 
 
 function draw() {
+    canvasHelper.update();
     canvasHelper.nextGrid();
 }
 
